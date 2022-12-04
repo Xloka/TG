@@ -1,4 +1,5 @@
 import { type DefaultSession } from "next-auth";
+import { type NextPage } from "next";
 
 declare module "next-auth" {
   /**
@@ -9,4 +10,9 @@ declare module "next-auth" {
       id: string;
     } & DefaultSession["user"];
   }
+}
+
+
+interface APP_PAGE extends NextPage {
+  auth: boolean
 }

@@ -1,35 +1,51 @@
-import { type NextPage } from "next";
 import Head from "next/head";
-// import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { type APP_PAGE } from "../types/next-auth";
+import { useQuery } from "@tanstack/react-query";
+import { trpc } from "../utils/trpc";
 
-// import { trpc } from "../utils/trpc";
-
-const Home: NextPage = () => {
+const Home: APP_PAGE = () => {
   const { data: session } = useSession();
+  const { data: exams } = trpc.users.getUserExams.useQuery();
 
-  return (
-    <>
-      <Head>
-        <title>Home</title>
-      </Head>
+  return <>
+    <Head>
+      <title>Home</title>
+    </Head>
+    <div>
+      <h1>Home</h1>
       <div>
-        <h1>Home</h1>
-        <p>
-          {session ? (
-            <>
+        {session ? (
+          <>
+            <div>
               Signed in as {session.user?.email} <br />
               <button onClick={() => signOut()}>Sign out</button>
-            </>
-          ) : (
-            <>
-              <button onClick={() => signIn()}>Sign in</button>
-            </>
-          )}
-        </p>
+            </div>
+            <div>
+              <h2>Exams</h2>
+              <ul>
+                {exams?.map((exam:{
+                  id: string;
+                  name: string;
+                }) => (
+                  <li key={exam.id}>
+                    <a href={`/exams/${exam.id}`}>{exam.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        ) : (
+          <>
+            Not signed in <br />
+            <button onClick={() => signIn()}>Sign in</button>
+          </>
+        )}
       </div>
-    </>
-  );
+    </div>
+  </>;
 };
+
+Home.auth = true;
 
 export default Home;
