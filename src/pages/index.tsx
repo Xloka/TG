@@ -1,19 +1,18 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { type APP_PAGE } from "../types/next-auth";
 import { trpc } from "../utils/trpc";
-import { DefaultTemplate } from "../components/templates";
+import { DefaultTemplate, AuthenticatedTemplate } from "../components/templates";
 
 const Home: APP_PAGE = () => {
   const { data: session } = useSession();
   const { data: exams } = trpc.users.getUserExams.useQuery();
-
+  
   return (
     <DefaultTemplate title="Home" description="Home" keywords="Home">
-      <div>
+      <AuthenticatedTemplate>
         {session ? (
           <>
             <div>
-              Signed in as {session.user?.email} <br />
               <button onClick={() => signOut()}>Sign out</button>
             </div>
             <div>
@@ -28,13 +27,8 @@ const Home: APP_PAGE = () => {
               </ul>
             </div>
           </>
-        ) : (
-          <>
-            Not signed in <br />
-            <button onClick={() => signIn()}>Sign in</button>
-          </>
-        )}
-      </div>
+        ) : null}
+      </AuthenticatedTemplate>
     </DefaultTemplate>
   );
 };
