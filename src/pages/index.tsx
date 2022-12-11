@@ -1,19 +1,14 @@
-import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { type APP_PAGE } from "../types/next-auth";
-import { useQuery } from "@tanstack/react-query";
 import { trpc } from "../utils/trpc";
+import { DefaultTemplate } from "../components/templates";
 
 const Home: APP_PAGE = () => {
   const { data: session } = useSession();
   const { data: exams } = trpc.users.getUserExams.useQuery();
 
-  return <>
-    <Head>
-      <title>Home</title>
-    </Head>
-    <div>
-      <h1>Home</h1>
+  return (
+    <DefaultTemplate title="Home" description="Home" keywords="Home">
       <div>
         {session ? (
           <>
@@ -24,14 +19,12 @@ const Home: APP_PAGE = () => {
             <div>
               <h2>Exams</h2>
               <ul>
-                {exams?.map((exam:{
-                  id: string;
-                  name: string;
-                }) => (
-                  <li key={exam.id}>
-                    <a href={`/exams/${exam.id}`}>{exam.name}</a>
-                  </li>
-                ))}
+                {exams &&
+                  exams.map((exam: { id: number; name: string }) => (
+                    <li key={exam.id}>
+                      <a href={`/exams/${exam.id}`}>{exam.name}</a>
+                    </li>
+                  ))}
               </ul>
             </div>
           </>
@@ -42,8 +35,8 @@ const Home: APP_PAGE = () => {
           </>
         )}
       </div>
-    </div>
-  </>;
+    </DefaultTemplate>
+  );
 };
 
 Home.auth = true;

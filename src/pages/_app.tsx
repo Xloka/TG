@@ -33,7 +33,7 @@ function Auth({ children }: { children: React.ReactNode }) {
     return <div>Loading...</div>;
   }
 
-  return <div>{children}</div>;
+  return <>{children}</>;
 }
 
 export default trpc.withTRPC(MyApp);
